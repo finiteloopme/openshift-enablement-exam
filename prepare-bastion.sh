@@ -4,7 +4,7 @@ set -e
 # set the ssh key
 cp $SSH_PUB_KEY ./my_id.pub 
 a=`whoami` 
-sed -i "s/^/$a:/" ./my_id.pub
+sed -iE "s/^/$a:/" ./my_id.pub
 export BASTION_USERNAME=$a
 
 gcloud compute project-info add-metadata --metadata-from-file sshKeys=./my_id.pub
@@ -28,7 +28,7 @@ ssh -t `gcloud compute addresses list | grep ose-bastion | awk '{print $3}'` 'su
 ssh `gcloud compute addresses list | grep ose-bastion | awk '{print $3}'` 'ssh-keygen -t rsa -f .ssh/id_rsa -N ""'
 # set the key in gcloud metadata
 ssh `gcloud compute addresses list | grep ose-bastion | awk '{print $3}'` cat /home/$a/.ssh/id_rsa.pub >  ./id_rsa.pub
-sed -i "s/^/$a:/" ./id_rsa.pub
+sed -iE "s/^/$a:/" ./id_rsa.pub
 cat id_rsa.pub >> my_id.pub
 gcloud compute project-info add-metadata --metadata-from-file sshKeys=./my_id.pub
 
